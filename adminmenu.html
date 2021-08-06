@@ -1,0 +1,332 @@
+﻿<script type="text/javascript" src="https://hhhhteams.sharepoint.com/sites/HHHHTeams/Style%20Library/js/angular/Online/Admin%20Menu/adminmenuController.js?updated=24092018"></script>
+
+<div ng-controller="adminmenuController" ng-cloak>
+	<div class="form-group">
+		<div class="col-sm-2">Search in all Menu data:</div>
+		<div class="col-sm-10">
+			<input id="search" type="search" ng-model="search" style='height: 30px;' placeholder="Search in all Menus..." class="form-control">
+			<span ng-show="search.length>0" class="searchclear" style="left:97%!important; top:21px;" ng-click="clearControl('search')">X</span>
+		</div>
+		<div class="clearfix"></div>
+	</div>
+	<div class="form-group" ng-hide="Menus==undefined || Menus.length==0 || filtered.length==0">
+		<div style="padding-left:17.5%;padding-right:15px;">
+			<div class="panel panel-default">
+				<div class="panel-body">
+					<div id="table-wrapper">
+						<div id="table-scroll">
+							<table id="Projects" class="table table-hover" cellspacing="0">
+								<tbody>
+									<tr ng-if="Menus.length == 0">
+										<td colspan="4" align="center">
+											Search Menu from all Menus.
+										</td>
+									</tr>
+
+									<tr ng-repeat="item in filtered = (Menus | orderBy:orderBy:reverse)">
+
+										<td><a href="javascript:void(0)"><img src="{{item.Item_x0020_Cover.Url}}" style="width:30px;height:30px;"></a></td>
+										<td><a href="{{item.Url.Url}}" target="_blank">{{item.Title}}</a></td>
+										<td><a href="{{item.Url.Url}}" target="_blank">{{item.Url.Url}}</a></td>
+										<td>
+											<a  href="javascript:void(0)" title="Edit" ng-click="EditMenu(item)">
+												<img src="/_layouts/images/edititem.gif">
+											</a>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="updateMenu" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false" style="display: none;">
+		<div class="modal-dialog" style="width:1100px;">
+			<div class="modal-content">
+				<ng-form name="UpdateMenuForm" novalidate role="form">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" ng-click="cancelMenuRecords()" style="min-width: 10px;">&times;</button>
+						<h4 class="modal-title">Update Menu</h4>
+					</div>
+
+					<div class="modal-body">
+						<div id="table-wrapper">
+							<div id="table-scroll">
+								<table class="table table-hover">
+									<tbody>
+										<tr>
+											<td width="40%">
+												<div>
+													<label class="full_width">Title</label>
+													<input id="linkTitle" ng-required="true" class="form-control" type="text" placeholder="linkTitle" ng-model="menuItems.Title">
+												</div>
+											</td>
+											<td width="60%">
+												<div>
+													<label class="full_width">Url</label>
+													<input id="linkUrl" name="linkurl" ng-pattern="/^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/" class="form-control" type="text" placeholder="Url" ng-model="menuItems.Url.Url">
+													<span class="required" ng-show="linkNewForm.linkurl.$error.pattern">Not a valid url!</span>
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<div>
+													<label class="full_width">Tab</label>
+													<div ng-repeat="tab in Tabs">
+														<input style="margin-top:0px" ng-model="menuItems.Tab" ng-value="tab.Title" ng-change="LoadHeader(tab.Id)" ng-checked="(menuItems.Tab == tab.Title)" name="tab" type="radio"> <span>{{tab.Title}}</span>
+													</div>
+												</div>
+											</td>
+											<td>
+												<div>
+													<label class="full_width">Header</label>
+													<div ng-repeat="header in Headers">
+														<input style="margin-top:0px" ng-model="menuItems.Header" ng-value="header.Title" ng-checked="(menuItems.Header == header.Title)" name="header" type="radio"> <span> {{header.Title}} </span>
+
+													</div>
+												</div>
+											</td>
+										</tr>
+
+										<tr>
+											<td>
+												<div class="form-group">
+													<div>
+														<label class="full_width">Sort Order</label>
+														<input id="sortOrder" name="sortorder" class="form-control" ng-pattern="/^[0-9]+([,.][0-9]+)?$/" type="text" placeholder="Sort Order" ng-model="menuItems.SortOrder">
+														<span class="required" ng-show="linkNewForm.sortorder.$error.pattern">Not a valid number!</span>
+													</div>
+													<div class="clearfix"></div>
+												</div>
+												<div class="form-group">
+													<div>
+														<label class="full_width">Item Image</label>
+														<img src="{{menuItems.Item_x0020_Cover.Url}}" />
+													</div>
+													<div class="clearfix"></div>
+												</div>
+											</td>
+											<td>
+
+												<div class="col-sm-12" ng-show="Images !=null && Images != undefined && Images.length>0">
+													<div class="panel panel-default">
+														<div class="panel-body">
+															<div id="iconImages">
+																<img id="{{img.Id}}_image" ng-src="{{img.EncodedAbsUrl}}" ng-click="selectImage(img)" class="col-sm-2" style="max-width:50px;padding:5px;" ng-repeat="img in Images" />
+															</div>
+														</div>
+													</div>
+												</div>
+											</td>
+										</tr>
+
+									</tbody>
+								</table>
+							</div>
+						</div>
+
+					</div>
+					<div>
+						<div class="ItemInfo" style="padding-top:15px;">
+							<div>Created <span>{{menuItems.Created}}</span> by <span class="footerUsercolor">{{menuItems.Author.Title}}</span></div>
+							<div>Last modified <span>{{menuItems.Modified}}</span> by <span class="footerUsercolor">{{menuItems.Editor.Title}}</span></div>
+							<div>
+								<a href="javascript:void(0);" ng-click="removeItem(menuItems.Id);"><img src="/_layouts/images/delete.gif"> Delete this item</a>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<a target="_blank" ng-href="{{baseUrl}}/admin/Lists/Admin%20Menu/EditForm.aspx?ID={{menuItems.Id}}">Open out-of-the-box form</a>
+							<button type="button" class="btn btn-primary" ng-disabled="UpdateMenuForm.$error.required" ng-click="updateMenuRecords()">Save</button>
+							<button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancelMenuRecords()">Cancel</button>
+						</div>
+					</div>
+
+				</ng-form>
+			</div>
+		</div>
+	</div>
+
+	<div id="tabs" class="exTab3">
+		<ul class="nav nav-pills">
+			<!--<li class="{{$index==0?'active':''}}" ng-repeat="tab in tabs">
+	<a href="#{{tab}}" data-toggle="tab">{{tab}}</a>
+		<a href="#Tab{{$index}}" id="TabHead{{$index}}" ng-click="setTabIndex($index)" class="ui-tabs-anchor" role="presentation" tabindex="-1">{{tab}}</a>
+		</li>-->
+			<li class="{{$index==tabsIndex?'active':''}}" role="tab" tabindex="{{$index}}" aria-controls="Tab{{$index}}" aria-labelledby="TabHead{{$index}}" aria-selected="true" ng-repeat="tab in tabs">
+				<a href="#Tab{{$index}}" data-toggle="tab" id="TabHead{{$index}}" ng-click="setTabIndex($index)" class="ui-tabs-anchor" role="presentation" tabindex="-1">{{tab}}</a>
+			</li>
+		</ul>
+		<div class="tab-content">
+			<div id="{{tab}}" class="tab-pane fade in {{$index==tabsIndex?'active':''}} tabheight" ng-repeat="tab in tabs">
+				<div ng-show="tab != 'ADMIN DOCUMENTS'" id="MSOZoneCell_WebPartWPQ5" class="s4-wpcell-plain ms-webpartzone-cell ms-webpart-cell-vertical ms-fullWidth " style="display: block;">
+					<div class="ms-webpart-chrome ms-webpart-chrome-vertical ms-webpart-chrome-fullWidth ">
+						<div id="WebPartWPQ5_ChromeTitle">
+							<span title="New Items - Allows authors to enter rich text content." id="WebPartTitleWPQ5" class="js-webpart-titleCell" style="display: none;">
+								<h2 style="text-align: justify;" class="ms-webpart-titleText">
+									<nobr><span style="display: none;">{{tab}}</span><span id="WebPartCaptionWPQ5"></span></nobr>
+								</h2>
+							</span>
+						</div>
+						<div haspers="false" id="WebPartWPQ5" width="100%" class="ms-WPBody ms-wpContentDivSpace " allowdelete="false" style="">
+							<div class="ms-rtestate-field">
+								<table width="100%" _moz_resizing="true" style="padding: 10px; line-height: 18px;">
+									<tbody>
+										<tr>
+											<td style="padding: 5px;" ng-repeat="header in headers">
+												<h1>​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​{{header}}</h1>
+											</td>
+										</tr>
+										<tr ng-repeat="row in rows">
+											<td ng-repeat="header in headers">
+												<h3 ng-if="items[header].length>row">
+													<span data-toggle="popover" class="tt1" data-trigger="hover" data-content="{{items[header][row].Description}}">
+														<img src="{{items[header][row].Item_x0020_Cover.Url}}" alt="" style="margin: 5px; width: 48px;">&nbsp;<a href="{{items[header][row].Url.Url}}" target="_blank">{{items[header][row].Title}}</a>
+														<a  href="javascript:void(0)" title="Edit" ng-click="EditMenu(items[header][row])"><img src="/_layouts/images/edititem.gif"></a>
+													</span>
+
+												</h3>
+
+											</td>
+
+										</tr>
+									</tbody>
+								</table>
+							</div>
+							<div class="ms-clear"></div>
+						</div>
+					</div>
+					<div class="ms-PartSpacingVertical"></div>
+				</div>
+				<div ng-show="tab == 'ADMIN DOCUMENTS'" id="MSOZoneCell_WebPartWPQ5" class="s4-wpcell-plain ms-webpartzone-cell ms-webpart-cell-vertical ms-fullWidth " style="display: block;">
+					<div id="table-wrapper">
+						<div id="table-scroll">
+							<table id="documents" class="table table-hover" cellspacing="0" width="100%">
+								<thead class="thead-scroll">
+									<tr>
+										<th style="width:2%">Type</th>
+										<th style="cursor: pointer;width:40%">Name </th>
+										<th style="cursor: pointer;width:12%">Modified</th>
+										<th style="cursor: pointer;width:18%">Modified By</th>
+										<th style="cursor: pointer;width:18%">Created By</th>
+										<th style="width:1%"></th>
+									</tr>
+								</thead>
+								<tbody class="tbody-scroll">
+									<tr ng-if="item.File_x0020_Type == 'docx' || item.File_x0020_Type == 'doc' || item.File_x0020_Type == 'xlsx' || item.File_x0020_Type == 'xls' || item.File_x0020_Type == 'pptx' || item.File_x0020_Type == 'ppt'" ng-repeat="item in AllDocuments">
+										<td style="width:2%"><img ng-if="item.File_x0020_Type == 'pdf'" src="{{baseUrl}}/SiteCollectionImages/ICONS/24/icon_pdf_16.jpg"> <img ng-if="item.File_x0020_Type != 'flv' && item.File_x0020_Type != 'js' && item.File_x0020_Type != 'css' && item.File_x0020_Type != 'zip' && item.File_x0020_Type != 'aspx' && item.File_x0020_Type != 'mp4' && item.File_x0020_Type != 'pdf'" ng-src="/_layouts/15/images/ic{{item.File_x0020_Type}}.png"> <img ng-if="item.File_x0020_Type == 'flv' || item.File_x0020_Type == 'js' || item.File_x0020_Type == 'css' || item.File_x0020_Type == 'zip' || item.File_x0020_Type == 'aspx' || item.File_x0020_Type == 'mp4'" ng-src="/_layouts/15/images/icgen.gif?rev=23"></td>
+										<td style="width:40%">
+											<a ng-if="item.File_x0020_Type == 'aspx'" target="_blank" ng-href="{{item.URL.Url}}">
+												<span data-ng-bind="item.FileLeafRef"></span>
+											</a>
+											<a ng-if="item.File_x0020_Type != 'aspx'" target="_blank" ng-href="{{item.EncodedAbsUrl}}?web=1">
+												<span data-ng-bind="item.FileLeafRef"></span>
+											</a>
+										</td>
+										<td style="width:12%">{{item.Modified}}</td>
+										<td style="width:18%">{{item.Editor.Title}}</td>
+										<td style="width:18%">{{item.Author.Title}}</td>
+										<td style="width:1%"><a ng-if="isOwner==true" href="javascript:void(0)" ng-click="DeletItem(item.Id)"> <img src="/_layouts/images/delete.gif"></a></td>
+									</tr>
+								</tbody>
+							</table>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+
+
+	<!--<div id="tabsContainer" class="exTab3 ui-tabs ui-widget ui-widget-content ui-corner-all">
+		<ul class="nav nav-pills ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" role="tablist">
+			<li class="ui-state-default ui-corner-top ng-scope " role="tab" tabindex="{{$index}}" aria-controls="Tab{{$index}}" aria-labelledby="TabHead{{$index}}" aria-selected="true" ng-repeat="tab in tabs">
+				<a href="#Tab{{$index}}" id="TabHead{{$index}}" ng-click="setTabIndex($index)" class="ui-tabs-anchor" role="presentation" tabindex="-1">{{tab}}</a>
+			</li>
+		</ul>
+		<div class="tab-content">
+			<div id="Tab{{$index}}" aria-labelledby="TabHead{{$index}}" class="ui-tabs-panel ui-widget-content ui-corner-bottom" role="tabpanel" aria-expanded="true" aria-hidden="false" style="display: block;" ng-repeat="tab in tabs">
+				<div ng-if="tab != 'ADMIN DOCUMENTS'" id="MSOZoneCell_WebPartWPQ5" class="s4-wpcell-plain ms-webpartzone-cell ms-webpart-cell-vertical ms-fullWidth " style="display: block;">
+					<div class="ms-webpart-chrome ms-webpart-chrome-vertical ms-webpart-chrome-fullWidth ">
+						<div id="WebPartWPQ5_ChromeTitle">
+							<span title="New Items - Allows authors to enter rich text content." id="WebPartTitleWPQ5" class="js-webpart-titleCell" style="display: none;">
+								<h2 style="text-align: justify;" class="ms-webpart-titleText">
+									<nobr><span style="display: none;">{{tab}}</span><span id="WebPartCaptionWPQ5"></span></nobr>
+								</h2>
+							</span>
+						</div>
+						<div haspers="false" id="WebPartWPQ5" width="100%" class="ms-WPBody ms-wpContentDivSpace " allowdelete="false" style="">
+							<div class="ms-rtestate-field">
+								<table width="100%" _moz_resizing="true" style="padding: 10px; line-height: 18px;">
+									<tbody>
+										<tr>
+											<td style="padding: 5px;" ng-repeat="header in headers">
+												<h2>​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​{{header}}</h2>
+											</td>
+										</tr>
+										<tr ng-repeat="row in rows">
+											<td ng-repeat="header in headers">
+												<h3 ng-if="items[header].length>row">
+													<span data-toggle="popover" class="tt1" data-trigger="hover" data-content="{{items[header][row].Description}}">
+														<img src="{{items[header][row].Item_x0020_Cover.Url}}" alt="" style="margin: 5px; width: 48px;">&nbsp;<a href="{{items[header][row].Url.Url}}" target="_blank">{{items[header][row].Title}}</a>
+														<a ng-if="isOwner==true" href="javascript:void(0)" title="Edit" ng-click="EditMenu(items[header][row])"><img src="/_layouts/images/edititem.gif"></a>
+													</span>
+
+												</h3>
+
+											</td>
+
+										</tr>
+									</tbody>
+								</table>
+							</div>
+							<div class="ms-clear"></div>
+						</div>
+					</div>
+					<div class="ms-PartSpacingVertical"></div>
+				</div>
+				<div ng-if="tab == 'ADMIN DOCUMENTS'" id="MSOZoneCell_WebPartWPQ5" class="s4-wpcell-plain ms-webpartzone-cell ms-webpart-cell-vertical ms-fullWidth " style="display: block;">
+					<div id="table-wrapper">
+						<div id="table-scroll">
+							<table id="documents" class="table table-hover" cellspacing="0" width="100%">
+								<thead class="thead-scroll">
+									<tr>
+										<th style="width:2%">Type</th>
+										<th style="cursor: pointer;width:40%">Name </th>
+										<th style="cursor: pointer;width:12%">Modified</th>
+										<th style="cursor: pointer;width:18%">Modified By</th>
+										<th style="cursor: pointer;width:18%">Created By</th>
+										<th style="width:1%"></th>
+									</tr>
+								</thead>
+								<tbody class="tbody-scroll">
+									<tr ng-if="item.File_x0020_Type == 'docx' || item.File_x0020_Type == 'doc' || item.File_x0020_Type == 'xlsx' || item.File_x0020_Type == 'xls' || item.File_x0020_Type == 'pptx' || item.File_x0020_Type == 'ppt'" ng-repeat="item in AllDocuments">
+										<td style="width:2%"><img ng-if="item.File_x0020_Type == 'pdf'" src="{{baseUrl}}/SiteCollectionImages/ICONS/24/icon_pdf_16.jpg"> <img ng-if="item.File_x0020_Type != 'flv' && item.File_x0020_Type != 'js' && item.File_x0020_Type != 'css' && item.File_x0020_Type != 'zip' && item.File_x0020_Type != 'aspx' && item.File_x0020_Type != 'mp4' && item.File_x0020_Type != 'pdf'" ng-src="/_layouts/15/images/ic{{item.File_x0020_Type}}.png"> <img ng-if="item.File_x0020_Type == 'flv' || item.File_x0020_Type == 'js' || item.File_x0020_Type == 'css' || item.File_x0020_Type == 'zip' || item.File_x0020_Type == 'aspx' || item.File_x0020_Type == 'mp4'" ng-src="/_layouts/15/images/icgen.gif?rev=23"></td>
+										<td style="width:40%">
+											<a ng-if="item.File_x0020_Type == 'aspx'" target="_blank" ng-href="{{item.URL.Url}}">
+												<span data-ng-bind="item.FileLeafRef"></span>
+											</a>
+											<a ng-if="item.File_x0020_Type != 'aspx'" target="_blank" ng-href="{{item.EncodedAbsUrl}}?web=1">
+												<span data-ng-bind="item.FileLeafRef"></span>
+											</a>
+										</td>
+										<td style="width:12%">{{item.Modified}}</td>
+										<td style="width:18%">{{item.Editor.Title}}</td>
+										<td style="width:18%">{{item.Author.Title}}</td>
+										<td style="width:1%"><a ng-if="isOwner==true" href="javascript:void(0)" ng-click="DeletItem(item.Id)"> <img src="/_layouts/images/delete.gif"></a></td>
+									</tr>
+								</tbody>
+							</table>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>-->

@@ -1,0 +1,214 @@
+﻿<script src="https://hhhhteams.sharepoint.com/sites/HHHHTeams/Style%20Library/js/angular/Online/Admin%20Menu/CreateAdminMenuItem.js"></script>
+<script>
+$(document).ready(function(){
+    $('[data-toggle="popover"]').popover();   
+});
+</script>
+<style type="text/css">
+    .modal {
+        background-image: none !important;
+    }
+
+    {
+        padding-top: 15px;
+        background: #fff !important;
+    }
+
+    .ms-webpart-zone {
+        background: #fff !important;
+    }
+
+    .modal-body {
+        position: relative;
+        padding: 0px 15px !important;
+    }
+
+    .modal-footer {
+        padding: 0 15px 15px;
+        margin-top: 0px !important;
+        text-align: right;
+        border-top: 0px !important;
+    }
+
+    .modal-content {
+        -webkit-box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        background: #fff !important;
+    }
+
+    .modal-content {
+        position: relative;
+        background-color: #ffffff;
+        border: 1px solid #999999;
+        border: 1px solid rgba(0,0,0,0.2);
+        border-radius: 6px;
+        -webkit-box-shadow: 0 3px 9px rgba(0,0,0,0.5);
+        box-shadow: 0 3px 9px rgba(0,0,0,0.5);
+        -webkit-background-clip: padding-box;
+        background-clip: padding-box;
+        outline: 0;
+    }
+
+    .label {
+        font-weight: bold;
+    }
+
+    .choicelabel {
+        font-weight: bold;
+        border-bottom: 2px solid #ddd;
+        padding-bottom: 10px;
+        padding-top: 7px;
+    }
+
+    .searchclear {
+        position: relative;
+        left: 90%;
+        bottom: 28px;
+        height: 14px;
+        margin: auto;
+        font-size: 14px;
+        cursor: pointer;
+        color: #ccc;
+    }
+
+    .col-sm-3, .col-sm-4, .col-sm-9 {
+        padding-right: 5px !important;
+        padding-left: 5px !important;
+    }
+
+    body {
+        cursor: default !important;
+    }
+
+    
+    .required {
+        color: red;
+    }
+
+    .ajax-loader {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        margin-left: -32px; /* -1 * image width / 2 */
+        margin-top: -32px; /* -1 * image height / 2 */
+    }
+
+    .form-group {
+        margin-bottom: 8px;
+    }
+
+  
+    .col-sm-1, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-sm-11, .col-sm-10, .col-sm-12 {
+        padding-left: 0px !important;
+        padding-right: 5px !important;
+    }
+
+    .titleLabel {
+        font-weight: bold;
+    }
+.marg{
+     margin-bottom:15px;"
+}
+.note-editor .panel-heading {
+    height: 70px!important;
+}
+.panel-body {
+    padding: 10px;
+}
+.titleLabel {
+    font-weight: normal;
+}
+</style>
+<div ng-controller="CreateAdminMenuController" ng-cloak style="border:1px solid #ccc;">
+    <div class="panel">
+        <div class="panel-body">
+            <ng-form name="linkNewForm" novalidate role="form">
+                 <div class="col-sm-12 marg">
+                           <div class="col-sm-6">						
+							   <div class="titleLabel">
+							   	<label class="full_width">Title</label>
+							   	<input id="linkTitle" ng-required="true" class="form-control searchbox_height" type="text" placeholder="linkTitle" ng-model="Title">
+							   </div>
+                                    </div>
+                                    <div class="col-sm-6">
+										<div class="titleLabel">
+											<label class="full_width">Url</label>
+											<input id="linkUrl" name="linkurl" ng-pattern="/^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/" class="form-control searchbox_height" type="text" placeholder="Url" ng-model="linkUrl">
+											<span class="required" ng-show="linkNewForm.linkurl.$error.pattern">Not a valid url!</span>
+										</div>
+                                    </div>
+                                </div>
+ 
+                       
+								
+								
+								<div class="col-sm-12 marg">
+                            <div class="col-sm-5">								
+								<div class="titleLabel">
+									<label class="full_width">Tab</label>
+									<!--<div ng-repeat="tab in Tabs">
+										<input style="margin-top:0px" ng-model="menuItems.Tab" ng-value="tab.Title" ng-change="LoadHeader(tab.Id)" ng-checked="(menuItems.Tab == tab.Title)" name="tab" type="radio"> <span>{{tab.Title}}</span>
+									</div>-->
+									<div ng-repeat="tab in Tabs">
+		<input style="margin-top:0px" ng-model="tab.Title" ng-value="tab.Title" ng-click="LoadHeader(tab.Id,tab.Title)" name="tab" type="radio" )> <span>{{tab.Title}}</span>
+	</div>
+
+								</div>
+										</div>
+								
+									<div class="col-sm-4">
+										<div class="titleLabel">
+											<label class="full_width">Header</label>
+											<!--<div ng-repeat="header in Headers">
+												<input style="margin-top:0px" ng-model="menuItems.Header" ng-value="header.Title" ng-checked="(menuItems.Header == header.Title)" name="header" type="radio"> <span> {{header.Title}} </span>
+
+											</div>-->
+											<div ng-repeat="header in Headers">
+		<input style="margin-top:0px" ng-model="header.Title" ng-click="getHeader(header.Title)" ng-value="header.Title" name="header" type="radio"> <span> {{header.Title}} </span>
+	</div>
+											
+
+
+										</div>
+										</div>
+								
+									<div class="col-sm-3">
+										<div class="col-sm-12 titleLabel">
+											<label class="full_width">Sort Order</label>
+											<input id="sortOrder" name="sortorder" class="form-control searchbox_height" ng-pattern="/^[0-9]+([,.][0-9]+)?$/" type="text" placeholder="Sort Order" ng-model="sortOrder">
+											<span class="required" ng-show="linkNewForm.sortorder.$error.pattern">Not a valid number!</span>
+										</div>
+										</div>
+								
+								</div>
+								
+							
+								
+							       <div class="col-sm-12 marg">
+							
+									<div class="col-sm-8">
+										<div id="editDescriptionbody"></div>
+									</div>
+									<div class="col-sm-4">
+										<div class="form-group" ng-show="Images !=null && Images != undefined && Images.length>0">
+											<div class="panel panel-default">
+												<div class="panel-body">
+													<div id="iconImages">
+														<img id="{{img.Id}}_image" ng-src="{{img.EncodedAbsUrl}}" ng-click="selectImage(img)" class="col-sm-2" style="max-width:50px;padding:5px;" ng-repeat="img in Images" />
+													</div>
+												</div>
+											</div>
+											<div class="clearfix"></div>
+										</div>
+                    </div>
+					</div>
+					
+                </div>
+            </ng-form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" ng-disabled="linkNewForm.$error.required || linkNewForm.$error.pattern" ng-click="CreateMenuItem()">Submit</button>
+            <button type="button" class="btn btn-default" ng-click="ClearControls()">Cancel</button>
+        </div>
+    </div>
+</div>
